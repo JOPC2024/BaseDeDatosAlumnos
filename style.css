@@ -1,0 +1,214 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+header {
+  background: #22282e;
+  height: 60px;
+  position: relative;
+  width: 100%;
+}
+
+
+#logo {
+  float: left;
+  padding: 6px 20px;
+  width: auto;
+  height: 60px;
+
+  a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    line-height: 44px;
+    text-transform: uppercase;
+  }
+}
+
+
+#menu {
+  position: absolute;
+  top: 60px;
+  width: 100%;
+
+
+  ul {
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+  }
+
+
+  li {
+    display: block;
+    background: #33363b;
+    text-transform: uppercase;
+    text-align: center;
+    border-bottom: 1px solid #282b30;
+
+
+    a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      line-height: 60px;
+      padding: 0 26px;
+
+      &:active,
+      &:focus   {
+        color: #ffc700;
+      }
+    }
+  }
+
+
+  .open-menu {
+    box-shadow: 0 1px 2px rgba(0,0,0,.5);
+    max-height: 400px;
+    transition: max-height .9s ease;
+  }
+}
+
+
+#nav-mobile {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  float: right;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  right: 0;
+  top: -60px;
+  opacity: 0.6;
+
+
+  &.nav-open {
+    opacity: 1;
+  }
+
+  span {
+    display: block;
+    width: 60%;
+    margin: 4px auto;
+    height: 4px;
+    background: #fff
+  }
+}
+
+#escudo{
+  width: 200px;
+  height: 200px;
+  margin: 150px auto;
+  background-image: url(img/Escudo.png);
+  background-size:contain;
+}
+
+#contalta{
+  margin:50px auto;
+  width: 280px;
+  height: 300px;
+  border:2px solid black;
+}
+
+#enalta{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items:end;
+  background-color: #22282e;
+}
+
+
+#formalta{
+  width: 80%;
+  height: 190px;
+  margin:20px auto;
+}
+
+.itemform{
+  margin:0px 0px 5px 0px;
+  height: 30px;
+  width: 100%;
+}
+
+#enpes{
+  width: 80%;
+  height: 60%;
+  display: flex;
+  align-items:end;
+  margin-left:10px;
+}
+
+.pes{
+  width: 50px;
+  height: 10px;
+  margin:0px 2px 0px 2px;
+  text-align: center;
+  padding: 10px;
+  background-color: hsl(225, 11%, 27%);
+  color:white;
+}
+
+#alu{
+  background-color: white;
+  color:#22282e;
+}
+
+#mat0{
+  display:flex;
+  font-size:12px;
+}
+#mat0 > label{
+  margin-right:10px;
+}
+
+@media only screen and (min-width: 768px) {
+
+  #nav-mobile{ display: none; }
+
+
+  #menu {
+    width: auto;
+    float: right;
+    top: 0;
+    position: relative;
+
+    .open-menu {
+      box-shadow: none;
+    }
+
+
+    ul {
+      max-height: inherit;
+    }
+
+
+    li {
+      float: left;
+      border: 0;
+      background: transparent;
+
+      a {
+        display: block;
+        color: #fff;
+        padding: 0 26px;
+
+        &:hover {
+          color: #ffc700;
+          background: #151a1e;
+        }
+      }
+    }
+  }
+
+  #escudo{
+    width: 400px;
+    height: 400px;
+  }
+}
