@@ -61,9 +61,10 @@ classDiagram
     }
 
     class Grupo{
-        -Profesor String
-        -Alumnos Array
-        +crear(String, String) boolean
+        -Tutor String
+        -NombreGrupo String
+        -Materias Array
+        +crear(String, String, Array) boolean
         +listar() Array
         +eliminar(String) boolean
         +promedio(String) float
