@@ -25,26 +25,52 @@ class Alumno{
 
 class Grupo{
     constructor(){
-        let __Tutor = '';
-        let __NombreGrupo = '';
-        let __Materias = '';
+        this.__Tutor = [];
+        this.__NombreGrupo = [];
+        this.__Materias = [];
     }
 
     crear(nombreGrupo, tutor, materias){
-        const datosGrupo = {
-            nomGrupo: this.__NombreGrupo = nombreGrupo,    
-            nomTutor: this.__Tutor = tutor,
-            matAsig: this.__Materias = materias
-        }
-        if(localStorage.getItem(this.__NombreGrupo) === null)
-        {
-            localStorage.setItem(this.__NombreGrupo, JSON.stringify(datosGrupo));
-            return true;  
+        if(localStorage.getItem('grupos') == null){
+            this.__NombreGrupo.push(nombreGrupo);
+            this.__Tutor.push(tutor);
+            this.__Materias.push(materias);
+            let datosGrupo = {
+                nomGrupo: this.__NombreGrupo,
+                nomTutor: this.__Tutor,
+                matAsig: this.__Materias
+            }
+            localStorage.setItem('grupos', JSON.stringify(datosGrupo));
         }
         else{
-            return false;
+            let datos = JSON.parse(localStorage.getItem('grupos'));
+            let cont = false;
+            for(let valor of datos['nomGrupo'])
+            {
+                if(valor == nombreGrupo){
+                    cont = true;
+                }
+            }
+            if(cont){
+                return false;
+            }
+            else{
+                this.__Tutor = datos['nomTutor'];
+                this.__Tutor.push(tutor);
+                this.__NombreGrupo = datos['nomGrupo'];
+                this.__NombreGrupo.push(nombreGrupo);
+                this.__Materias = datos['matAsig'];
+                this.__Materias.push(materias);
+                let datosGrupo = {
+                    nomGrupo: this.__NombreGrupo,
+                    nomTutor: this.__Tutor,
+                    matAsig: this.__Materias
+                }
+                localStorage.setItem('grupos', JSON.stringify(datosGrupo));
+                alert(datos['nomGrupo']);
+                return true;         
+            }
         }
-
     }
 
     listar(){

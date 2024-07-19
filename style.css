@@ -2,6 +2,10 @@
     margin: 0px;
     padding: 0px;
 }
+body{
+  font-size: 14px;
+}
+
 header {
   background: #22282e;
   height: 60px;
