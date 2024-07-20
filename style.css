@@ -175,6 +175,9 @@ header {
 input {
   text-align: center;
 }
+select{
+  text-align: center;
+}
 @media only screen and (min-width: 768px) {
 
   #nav-mobile{ display: none; }

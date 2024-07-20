@@ -1,14 +1,16 @@
 class Alumno{
     constructor(){
-        let __Nombre = '';
-        let __Apellido = '';
-        let __Edad =  0;
+        this.__Nombre = '';
+        this.__Apellido = '';
+        this.__Edad =  0;
+        this.__Grupo = '';
     }
     
-    alta(nombre, apellido, edad){
+    alta(nombre, apellido, edad, grupo){
         this.__Nombre = nombre;
         this.__Apellido = apellido;
         this.__Edad = edad;
+        this.__Grupo = grupo;
     }
 
     mostrar(){
@@ -41,6 +43,7 @@ class Grupo{
                 matAsig: this.__Materias
             }
             localStorage.setItem('grupos', JSON.stringify(datosGrupo));
+            return true;
         }
         else{
             let datos = JSON.parse(localStorage.getItem('grupos'));
@@ -74,7 +77,10 @@ class Grupo{
     }
 
     listar(){
-        // listar los grupos
+        let grupos = localStorage.getItem('grupos')
+        let resultado = '';
+        (grupos != null) ? resultado = JSON.parse(grupos)['nomGrupo'] : resultado = null;
+        return resultado;
     }
 
     eliminar(){
@@ -107,8 +113,18 @@ buttonMenu.addEventListener('click', (e) => {
 buttonAl.addEventListener('click', (e) => {
     let padre = document.getElementById('contenedor');
     padre.removeChild(padre.firstElementChild);
-    padre.innerHTML='<div id="contalta"><div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes1()">Alumno</div><div id="gru" class="pes" onclick="pes2()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Nombre:" class="itemform" required /><input type="text" placeholder="  Apellido:" class="itemform" required /><input type="number" min="1" max="200" placeholder="  Edad:" class="itemform" required /><select id="nomGrupo" class="itemform"></select><input type="submit" class="itemform" id="aluag" value="Agregar" /></div></div>';
-
+    padre.innerHTML='<div id="contalta"><div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes1()">Alumno</div><div id="gru" class="pes" onclick="pes2()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Nombre:" class="itemform" id="nomAlu"/><input type="text" placeholder="  Apellido:" class="itemform" id="apeAlu"/><input type="number" min="1" max="200" placeholder="  Edad:" class="itemform" id="edad"/><select id="nomGru" class="itemform"></select><input type="submit" class="itemform" id="aluag" onclick="aluag()" value="Agregar" /></div></div>';
+    let listgrupo = grupo.listar();
+    let opciones = '';
+    if(listgrupo != null)
+    {
+        for(gru of listgrupo)
+        {
+            opciones += '<option value="'+gru+'">'+gru+'</option>';
+        }
+    }
+    padre = document.getElementById('nomGru');
+    padre.innerHTML=opciones;
 });
 
 buttonCal.addEventListener('click', (e) => {
@@ -124,15 +140,39 @@ buttonLis.addEventListener('click', (e) => {
 function pes1(){
     let padre = document.getElementById('contalta');
     padre.removeChild(document.getElementById('formalta'));
-    padre.innerHTML='<div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes1()">Alumno</div><div id="gru" class="pes" onclick="pes2()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Nombre:" class="itemform" /><input type="text" placeholder="  Apellido:" class="itemform" /><input type="number" min="1" max="200" placeholder="  Edad:" class="itemform" /><input type="text" placeholder="  Grupo:" class="itemform" /><input type="submit" id="aluag" class="itemform" value="Agregar" /></div>';
+    padre.innerHTML='<div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes1()">Alumno</div><div id="gru" class="pes" onclick="pes2()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Nombre:" class="itemform" id="nomAlu" /><input type="text" placeholder="  Apellido:" class="itemform" id="apeAlu" /><input type="number" min="1" max="200" placeholder="  Edad:" class="itemform" id="edad"/><select id="nomGru" class="itemform"></select><input type="submit" id="aluag" class="itemform" onclick="aluag()" value="Agregar" /></div>';
     let pestana = document.getElementById('alu');
     pestana.style.backgroundColor='white';
     pestana.style.color='#22282e'
     pestana = document.getElementById('gru');
     pestana.style.backgroundColor='hsl(225, 11%, 27%)';
     pestana.style.color='white';
+    let listgrupo = grupo.listar();
+    let opciones = '';
+    if(listgrupo != null)
+    {
+        for(gru of listgrupo)
+        {
+            opciones += '<option value="'+gru+'">'+gru+'</option>';
+        }
+    }
+    padre = document.getElementById('nomGru');
+    padre.innerHTML=opciones;
 }
 
+function aluag(){
+    let nomAlu = document.getElementById('nomAlu').value;
+    let apeAlu = document.getElementById('apeAlu').value;
+    let edad = document.getElementById('edad').value;
+    let nomGru = document.getElementById('nomGru').value;
+    if(nomAlu != '' && apeAlu != '' & Number.isInteger(parseInt(edad)) & nomGru != ''){
+        localStorage.setItem('');
+        alert('se agrego el alumno');
+    }
+    else{
+        alert('uno de los campos se no se lleno correctamente o esta vacio, vuelva a intentarlo');
+    }
+}
 function pes2(){
     let padre = document.getElementById('contalta');
     padre.removeChild(document.getElementById('formalta'));
@@ -159,7 +199,7 @@ function gruag(){
             materiasAsignadas.push(key);
         }
     }
-    if(nombreGrupo !== '' && nomTutor !== '')
+    if(nombreGrupo !== '' && nomTutor !== '' && materiasAsignadas.length > 0)
     {
         let resultado = grupo.crear(nombreGrupo, nomTutor, materiasAsignadas);
         resultado ? alert('se registro el Grupo correctamente') : alert('el grupo ya existe')
