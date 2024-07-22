@@ -114,7 +114,6 @@ class Grupo{
                     matAsig: this.__Materias
                 }
                 localStorage.setItem('grupos', JSON.stringify(datosGrupo));
-                alert(datos['nomGrupo']);
                 return true;         
             }
         }
@@ -172,7 +171,7 @@ class Calificacion{
                 nomGru: this.__NomGru,
                 nomAlu: this.__NomAlu,
                 mate: this.__Mate,
-                cali: this__Cali
+                cali: this.__Cali
             }
             localStorage.setItem('calificaciones', JSON.stringify(datosCali));
             return true;
@@ -180,9 +179,9 @@ class Calificacion{
         else{
             let datos = JSON.parse(localStorage.getItem('calificaciones'));
             let cont = false;
-            for(let valor of datos['nomGrupo'])
+            for(let valor of datos['nomAlu'])
             {
-                if(valor == nombreGrupo){
+                if(valor == nomAlu){
                     cont = true;
                 }
             }
@@ -190,19 +189,21 @@ class Calificacion{
                 return false;
             }
             else{
-                this.__Tutor = datos['nomTutor'];
-                this.__Tutor.push(tutor);
-                this.__NombreGrupo = datos['nomGrupo'];
-                this.__NombreGrupo.push(nombreGrupo);
-                this.__Materias = datos['matAsig'];
-                this.__Materias.push(materias);
-                let datosGrupo = {
-                    nomGrupo: this.__NombreGrupo,
-                    nomTutor: this.__Tutor,
-                    matAsig: this.__Materias
+                this.__NomGru = datos['nomGru'];
+                this.__NomGru.push(nomGru);
+                this.__NomAlu = datos['nomAlu'];
+                this.__NomAlu.push(nomAlu);
+                this.__Mate = datos['mate'];
+                this.__Mate.push(mate);
+                this.__Cali = datos['cali'];
+                this.__Cali.push(cali);
+                let datosCali = {
+                    nomGru: this.__NomGru,
+                    nomAlu: this.__NomAlu,
+                    mate: this.__Mate,
+                    cali: this.__Cali
                 }
-                localStorage.setItem('grupos', JSON.stringify(datosGrupo));
-                alert(datos['nomGrupo']);
+                localStorage.setItem('grupos', JSON.stringify(datosCali));
                 return true;         
             }
         }
@@ -224,8 +225,11 @@ const buttonCal = document.querySelector('#cal');
 const buttonLis = document.querySelector('#lis');
 const alumno = new Alumno();
 const grupo = new Grupo();
-let alumnoData = "";
-let grupoData = "";
+const calificacion = new Calificacion();
+let GrupoAlum = "";
+let NomAlum = "";
+let MateAlum = [];
+let CaliAlum = [];
 
 buttonMenu.addEventListener('click', (e) => {
   e.currentTarget.classList.toggle('nav-open');
@@ -357,14 +361,15 @@ function busAlu(){
         let alu2 = alumno.mostrar(alum.trim().toLowerCase());
         if(alu2 != null)
         {
-            this.alumnoData = alu2;
+            this.NomAlum = alu2[0];
             let mat2 = grupo.mostrarDataGrupo(alu2[2]);  
             if(mat2 != null)
             {
-                this.grupoData = mat2;
-                document.getElementById('contCal').style.height="200px";
+                this.GrupoAlum = alu2[2];
+                document.getElementById('contCal').style.height="230px";
                 let padre = document.getElementById('contCal');
                 padre.removeChild(document.getElementById('formCal'));
+                this.MateAlum = mat2[2];
                 for(let mat4 of mat2[2]){
                     content += '<input type="text" class="itemform" id="'+mat4+'" placeholder="Ingresa calificacion de '+mat4+'" />'
                 }
@@ -401,7 +406,13 @@ function guardarCalificaciones(){
             campo.push(parseFloat(document.getElementById('geografia').value));
         }
     }
-    alert(campo);
+    this.CaliAlum = campo;
+    console.log(this.GrupoAlum);
+    console.log(this.NomAlum);
+    console.log(this.MateAlum);
+    console.log(this.CaliAlum);
+    calificacion.guardarCali(this.GrupoAlum, this.NomAlum, this.MateAlum, this.CaliAlum);
+
 }
 function pes4(){
     let padre = document.getElementById('contCal');
