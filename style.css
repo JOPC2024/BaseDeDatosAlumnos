@@ -120,7 +120,14 @@ header {
   border:2px solid black;
 }
 
-#enalta{
+#contCal{
+  margin:50px auto;
+  width: 280px;
+  height: 170px;
+  border:2px solid black;
+}
+
+#enalta, #enCal{
   width: 100%;
   height: 50px;
   display: flex;
@@ -128,8 +135,15 @@ header {
   background-color: #22282e;
 }
 
+#enCal{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items:end;
+  background-color: #22282e;
+}
 
-#formalta{
+#formalta, #formCal{
   width: 80%;
   height: 190px;
   margin:20px auto;

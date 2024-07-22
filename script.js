@@ -1,27 +1,71 @@
 class Alumno{
     constructor(){
-        this.__Nombre = '';
-        this.__Apellido = '';
-        this.__Edad =  0;
-        this.__Grupo = '';
+        this.__Nombre = [];
+        this.__Edad =  [];
+        this.__Grupo = [];
     }
     
     alta(nombre, apellido, edad, grupo){
-        this.__Nombre = nombre;
-        this.__Apellido = apellido;
-        this.__Edad = edad;
-        this.__Grupo = grupo;
+        if(localStorage.getItem('alumnos') == null){
+            this.__Nombre.push(nombre+' '+apellido);
+            this.__Edad.push(edad);
+            this.__Grupo.push(grupo);
+            let datosAlumno = {
+                nomAlu: this.__Nombre,
+                edad: this.__Edad,
+                nomGrupo: this.__Grupo
+            }
+            localStorage.setItem('alumnos', JSON.stringify(datosAlumno));
+            return true;
+        }
+        else{
+            let datos = JSON.parse(localStorage.getItem('alumnos'));
+            let cont = false;
+            for(let valor of datos['nomAlu'])
+            {
+                if(valor == nombre+' '+apellido){
+                    cont = true;
+                }
+            }
+            if(cont){
+                return false;
+            }
+            else{
+                this.__Nombre = datos['nomAlu'];
+                this.__Nombre.push(nombre+' '+apellido);
+                this.__Edad = datos['edad'];
+                this.__Edad.push(edad);
+                this.__Grupo = datos['nomGrupo'];
+                this.__Grupo.push(grupo);
+                let datosAlumno = {
+                    nomAlu: this.__Nombre,
+                    edad: this.__Edad,
+                    nomGrupo: this.__Grupo
+                }
+                localStorage.setItem('alumnos', JSON.stringify(datosAlumno));
+                alert(datos['nomAlu']);
+                return true;         
+            }
+        }
     }
 
-    mostrar(){
-
+    mostrar(nombre){
+        let alumnos = localStorage.getItem('alumnos');
+        let resultado = [];
+        if(alumnos != null){
+            let datoAlumnos = JSON.parse(alumnos);
+            for(let i = 0; i<datoAlumnos['nomAlu'].length; i++)
+            {
+                if(datoAlumnos['nomAlu'][i].includes(nombre)){
+                    resultado.push(datoAlumnos['nomAlu'][i]);
+                    resultado.push(datoAlumnos['edad'][i]);
+                    resultado.push(datoAlumnos['nomGrupo'][i]);
+                    return resultado;
+                }
+            }
+        }
+        return null;
     }
-
-    promedio(){
-
-    }
-
-
 }
 
 
@@ -83,12 +127,26 @@ class Grupo{
         return resultado;
     }
 
-    eliminar(){
-        // eliminar grupo
+    mostrarDataGrupo(nombreGrupo){
+        let grupos = localStorage.getItem('grupos');
+        let resultado = [];
+        if(grupos != null){
+            let datoGrupo = JSON.parse(grupos);
+            for(let i = 0; i<datoGrupo['nomGrupo'].length; i++)
+            {
+                if(datoGrupo['nomGrupo'][i].includes(nombreGrupo)){
+                    resultado.push(datoGrupo['nomGrupo'][i]);
+                    resultado.push(datoGrupo['nomTutor'][i]);
+                    resultado.push(datoGrupo['matAsig'][i]);
+                    return resultado;
+                }
+            }
+        }
+        return null;
     }
 
-    promedio(){
-        // promedio del grupo
+    eliminar(){
+        // eliminar grupo
     }
 
     listarPorCalificacion(nombre, asc){
@@ -96,6 +154,68 @@ class Grupo{
     }
 }
 
+class Calificacion{
+    constructor(){
+        this.__NomGru = [];
+        this.__NomAlu = [];
+        this.__Mate = [];
+        this.__Cali = [];
+    }
+
+    guardarCali(nomGru, nomAlu, mate, cali){
+        if(localStorage.getItem('calificaciones') == null){
+            this.__NomGru.push(nomGru);
+            this.__NomAlu.push(nomAlu);
+            this.__Mate.push(mate);
+            this.__Cali.push(cali);
+            let datosCali = {
+                nomGru: this.__NomGru,
+                nomAlu: this.__NomAlu,
+                mate: this.__Mate,
+                cali: this__Cali
+            }
+            localStorage.setItem('calificaciones', JSON.stringify(datosCali));
+            return true;
+        }
+        else{
+            let datos = JSON.parse(localStorage.getItem('calificaciones'));
+            let cont = false;
+            for(let valor of datos['nomGrupo'])
+            {
+                if(valor == nombreGrupo){
+                    cont = true;
+                }
+            }
+            if(cont){
+                return false;
+            }
+            else{
+                this.__Tutor = datos['nomTutor'];
+                this.__Tutor.push(tutor);
+                this.__NombreGrupo = datos['nomGrupo'];
+                this.__NombreGrupo.push(nombreGrupo);
+                this.__Materias = datos['matAsig'];
+                this.__Materias.push(materias);
+                let datosGrupo = {
+                    nomGrupo: this.__NombreGrupo,
+                    nomTutor: this.__Tutor,
+                    matAsig: this.__Materias
+                }
+                localStorage.setItem('grupos', JSON.stringify(datosGrupo));
+                alert(datos['nomGrupo']);
+                return true;         
+            }
+        }
+    }   
+
+    mostrarPromedioPorAlum(){
+
+    }
+
+    mostrarPromedioPorGrupo(){
+
+    }
+}
 
 const buttonMenu = document.querySelector('#nav-mobile');
 const navMenu = document.querySelector('.nav-menu');
@@ -104,6 +224,8 @@ const buttonCal = document.querySelector('#cal');
 const buttonLis = document.querySelector('#lis');
 const alumno = new Alumno();
 const grupo = new Grupo();
+let alumnoData = "";
+let grupoData = "";
 
 buttonMenu.addEventListener('click', (e) => {
   e.currentTarget.classList.toggle('nav-open');
@@ -130,7 +252,7 @@ buttonAl.addEventListener('click', (e) => {
 buttonCal.addEventListener('click', (e) => {
     let padre = document.getElementById('contenedor');
     padre.removeChild(padre.firstElementChild);
-    padre.innerHTML='<div id="contalta"><div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Buscar Alumno:" class="itemform" /><input type="submit" class="itemform" value="Buscar" /></div></div>';
+    padre.innerHTML='<div id="contCal"><div id="enCal"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formCal"><input type="text" placeholder="  Buscar Alumno:" class="itemform" id="busalum" /><input type="submit" class="itemform" value="Buscar" onclick="busAlu()"/></div></div>';
 });
 
 buttonLis.addEventListener('click', (e) => {
@@ -166,13 +288,19 @@ function aluag(){
     let edad = document.getElementById('edad').value;
     let nomGru = document.getElementById('nomGru').value;
     if(nomAlu != '' && apeAlu != '' & Number.isInteger(parseInt(edad)) & nomGru != ''){
-        localStorage.setItem('');
-        alert('se agrego el alumno');
+        if(alumno.alta(nomAlu.trim().toLowerCase(), apeAlu.trim().toLowerCase(), edad, nomGru.trim().toLowerCase()))
+        {
+            alert('se agrego el alumno correctamente');
+        }
+        else{
+            alert('el alumno ya existe');
+        }
     }
     else{
         alert('uno de los campos se no se lleno correctamente o esta vacio, vuelva a intentarlo');
     }
 }
+
 function pes2(){
     let padre = document.getElementById('contalta');
     padre.removeChild(document.getElementById('formalta'));
@@ -201,7 +329,7 @@ function gruag(){
     }
     if(nombreGrupo !== '' && nomTutor !== '' && materiasAsignadas.length > 0)
     {
-        let resultado = grupo.crear(nombreGrupo, nomTutor, materiasAsignadas);
+        let resultado = grupo.crear(nombreGrupo.trim().toLowerCase(), nomTutor.trim().toLowerCase(), materiasAsignadas);
         resultado ? alert('se registro el Grupo correctamente') : alert('el grupo ya existe')
     }
     else{
@@ -210,9 +338,10 @@ function gruag(){
 }
 
 function pes3(){
-    let padre = document.getElementById('contalta');
-    padre.removeChild(document.getElementById('formalta'));
-    padre.innerHTML='<div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Buscar Alumno:" class="itemform" /><input type="submit" class="itemform" value="Buscar" /></div></div>';
+    let padre = document.getElementById('contCal');
+    padre.removeChild(document.getElementById('formCal'));
+    padre.innerHTML='<div id="enCal"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formCal"><input type="text" placeholder="  Buscar Alumno:" class="itemform" id="busalum"/><input type="submit" class="itemform" value="Buscar" onclick="busAlu()"/></div></div>';
+    document.getElementById('contCal').style.height="170px";
     let pestana = document.getElementById('alu');
     pestana.style.backgroundColor='white';
     pestana.style.color='#22282e';
@@ -221,10 +350,64 @@ function pes3(){
     pestana.style.color='white';
 }
 
+function busAlu(){
+    let alum = document.getElementById('busalum').value;
+    let content = "";
+    if(alum != ''){
+        let alu2 = alumno.mostrar(alum.trim().toLowerCase());
+        if(alu2 != null)
+        {
+            this.alumnoData = alu2;
+            let mat2 = grupo.mostrarDataGrupo(alu2[2]);  
+            if(mat2 != null)
+            {
+                this.grupoData = mat2;
+                document.getElementById('contCal').style.height="200px";
+                let padre = document.getElementById('contCal');
+                padre.removeChild(document.getElementById('formCal'));
+                for(let mat4 of mat2[2]){
+                    content += '<input type="text" class="itemform" id="'+mat4+'" placeholder="Ingresa calificacion de '+mat4+'" />'
+                }
+                padre.innerHTML='<div id="enCal"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formCal">'+content+'<input type="submit" class="itemform" value="Guardar" onclick="guardarCalificaciones()"/></div></div>';
+            }
+            else{
+                alert('no se encontraron materias');
+            }
+        }
+        else{
+            alert('no se encontro el alumno');
+        }
+    }
+    else{
+        alert('el campo no se lleno, vuelva a intentarlo');
+    }
+}
+
+function guardarCalificaciones(){
+    let campo = [];
+    let datosCali = new Object();
+    if(document.getElementById('espanol') != null){
+        if(parseInt(document.getElementById('espanol').value)){
+            campo.push(parseFloat(document.getElementById('espanol').value));
+        }
+    }
+    if(document.getElementById('matematicas') != null){
+        if(parseInt(document.getElementById('matematicas').value)){
+            campo.push(parseFloat(document.getElementById('matematicas').value));
+        }
+    }
+    if(document.getElementById('geografia') != null){
+        if(parseInt(document.getElementById('geografia').value)){
+            campo.push(parseFloat(document.getElementById('geografia').value));
+        }
+    }
+    alert(campo);
+}
 function pes4(){
-    let padre = document.getElementById('contalta');
-    padre.removeChild(document.getElementById('formalta'));
-    padre.innerHTML='<div id="enalta"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formalta"><input type="text" placeholder="  Buscar Grupo:" class="itemform" /><input type="submit" class="itemform" value="Buscar" /></div></div>';
+    let padre = document.getElementById('contCal');
+    padre.removeChild(document.getElementById('formCal'));
+    padre.innerHTML='<div id="enCal"><div id="enpes"><div id="alu" class="pes" onclick="pes3()">Alumno</div><div id="gru" class="pes" onclick="pes4()">Grupo</div></div></div><div id="formCal"><input type="text" placeholder="  Buscar Grupo:" class="itemform" /><input type="submit" class="itemform" value="Buscar" /></div></div>';
+    document.getElementById('contCal').style.height="170px";
     let pestana = document.getElementById('gru');
     pestana.style.backgroundColor='white';
     pestana.style.color='#22282e';
